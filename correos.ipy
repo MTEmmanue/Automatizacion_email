@@ -1,0 +1,40 @@
+import smtplib
+from email.message import EmailMessage
+
+# Datos del remitente
+EMAIL_REMITENTE = "tucorreo@gmail.com"
+CONTRASEÑA = "tu_contraseña_o_contraseña_de_aplicacion"
+
+# Solicita los destinatarios por consola
+entrada = input("Ingresa los correos separados por comas: ")
+destinatarios = [correo.strip() for correo in entrada.split(',') if correo.strip()]
+
+# Contenido del correo (igual para todos)
+asunto = "Recordatorio de reunión"
+mensaje = """
+Hola,
+
+Este es un recordatorio de que la reunión será el viernes a las 10:00 AM vía Zoom.
+
+Saludos,
+Emmanuel
+"""
+
+# Crear el objeto del mensaje
+msg = EmailMessage()
+msg['Subject'] = asunto
+msg['From'] = EMAIL_REMITENTE
+msg.set_content(mensaje)
+
+# Envío por SMTP
+try:
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(EMAIL_REMITENTE, CONTRASEÑA)
+
+        for destinatario in destinatarios:
+            msg['To'] = destinatario
+            smtp.send_message(msg)
+            print(f"Correo enviado a {destinatario}")
+            del msg['To']  # Limpiar para el siguiente
+except Exception as e:
+    print("Error al enviar correos:", e)

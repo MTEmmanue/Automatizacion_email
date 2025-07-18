@@ -1,0 +1,67 @@
+import pyautogui
+import pyperclip
+import webbrowser
+import time
+import yfinance
+import matplotlib
+
+
+
+ticker = input("Digita el código de la acción: ")
+
+data = yfinance.Ticker(ticker).history("6mo")
+cierre = data.Close 
+
+maxima = round(cierre.max(), 2)
+minima = round(cierre.min(), 2)
+valor_medio = cierre.mean()
+
+destinatario = "j.muz.tapia@gmail.com"
+
+asunto = "Análisis de acciones en los últimos 6 meses"
+cuerpo = f"""
+Hola.
+
+Te comparto el análisis de la acción {ticker} de los últimos 6 meses.
+ 
+Cotización mínima de USD {minima}
+Cotización máxima de USD {maxima}
+Cotización media de USD {valor_medio}
+
+
+Saludos cordiales.
+"""
+
+
+# Abir el navegador y la página de Gmail
+webbrowser.open('https://mail.google.com/mail/u/0/#inbox')
+
+time.sleep(3)
+
+pyautogui.PAUSE = 3 # Pausa de 3 segundos entre cada acción
+
+# Hacer click en el botón de redacción
+pyautogui.click(x=75, y=177)  # Click con las coordenadas de la pantalla
+
+
+pyperclip.copy(destinatario)  # Copia el destinatario al portapapeles
+pyautogui.hotkey('ctrl', 'v')  # Pega el destinatario en el campo "Para"
+
+pyautogui.PAUSE = 1
+
+pyautogui.press('tab')  # Presiona la tecla Tab para ir al campo "Asunto"
+
+pyperclip.copy(asunto)  # Copia el asunto al portapapeles
+pyautogui.hotkey('ctrl', 'v')  # Pega el asunto en el campo "Asunto"
+pyautogui.press('tab')  # Presiona la tecla Tab para ir al cuerpo del correo    
+
+pyperclip.copy(cuerpo)  # Copia el cuerpo al portapapeles
+pyautogui.hotkey('ctrl', 'v')  # Pega el cuerpo en el cuerpo del correo
+
+time.sleep(3)
+
+pyautogui.click(x=1296, y=988)  # Click en el botón de enviar
+
+time.sleep(1)
+
+pyautogui.hotkey('ctrl', 'f4')  # Cierra la pestaña del navegador
